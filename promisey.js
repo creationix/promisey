@@ -9,6 +9,18 @@ exports.F = (fn, ...args) => new Promise((resolve, reject) =>
 
 // Wait for a single node-style event (or error)
 exports.E = (obj, name) => new Promise((resolve, reject) => {
-  obj.once('error', reject)
-  obj.once(name, resolve)
+  function onError (err) {
+    clear()
+    return reject(err)
+  }
+  function onResult (val) {
+    clear()
+    return resolve(val)
+  }
+  function clear () {
+    obj.off('error', onError)
+    obj.off(name, onResult)
+  }
+  obj.on('error', onError)
+  obj.on(name, onResult)
 })
