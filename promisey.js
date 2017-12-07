@@ -18,9 +18,33 @@ exports.E = (obj, name) => new Promise((resolve, reject) => {
     return resolve(val)
   }
   function clear () {
-    obj.off('error', onError)
-    obj.off(name, onResult)
+    obj.removeListener('error', onError)
+    obj.removeListener(name, onResult)
   }
   obj.on('error', onError)
   obj.on(name, onResult)
 })
+
+// Wait for the first of several events and report which won
+exports.EE = (obj, ...names) => new Promise((resolve, reject) => {
+  let handlers = { error: err => {
+    clear()
+    reject(err)
+  } }
+  obj.on('error', handlers.error)
+  for (let name of names) {
+    let handler = handlers[name] = () => {
+      clear()
+      resolve(name)
+    }
+    obj.on(name, handler)
+  }
+  function clear () {
+    for (let name of names) {
+      obj.removeListener(name, handlers[name])
+    }
+  }
+})
+
+// Call a normal function as always async
+exports.C = async (fn, ...args) => fn(...args)
