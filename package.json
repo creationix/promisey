@@ -1,6 +1,6 @@
 {
   "name": "promisey",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Quick helpers for consuming various non-promise APIs with promises.",
   "main": "promisey.js",
   "scripts": {
