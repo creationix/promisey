@@ -33,6 +33,7 @@ exports.EE = (obj, ...names) => new Promise((resolve, reject) => {
   } }
   obj.on('error', handlers.error)
   for (let name of names) {
+    if (name === 'error') continue
     let handler = handlers[name] = () => {
       clear()
       resolve(name)
