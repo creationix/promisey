@@ -40,8 +40,9 @@ exports.EE = (obj, ...names) => new Promise((resolve, reject) => {
     obj.on(name, handler)
   }
   function clear () {
-    for (let name of names) {
+    for (let name in handlers) {
       obj.removeListener(name, handlers[name])
+      delete handlers[name]
     }
   }
 })
